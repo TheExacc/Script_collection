@@ -4,24 +4,16 @@ A C++ program that fetches and matches bash scripts from a remote JSON file. It 
 
 ## Features
 
-- **Dynamic Script Retrieval:**  
-  Fetch a JSON file containing multiple bash scripts from a remote GitHub repository.
-- **Flexible Query Matching:**  
-  Enter partial queries (e.g., "sys info", "backup") to find the most relevant bash script.
-- **Easy to Build and Package:**  
-  Written in C++ with minimal dependencies and easy integration as an Arch Linux AUR package.
-- **Simple and Extensible:**  
-  Designed for easy customization and extension.
+- **Dynamic Script Retrieval:** Fetch a JSON file containing multiple bash scripts from a remote GitHub repository.
+- **Flexible Query Matching:** Enter partial queries (e.g., "sys info", "backup") to find the most relevant bash script.
+- **Easy Build & Packaging:** Minimal dependencies and simple integration as an Arch Linux AUR package.
 
 ## Requirements
 
-- **Compiler:**  
-  `g++` (or any C++ compiler supporting C++11 or later)
+- **Compiler:** `g++` (supporting C++11 or later)
 - **Libraries:**  
-  - [libcurl](https://curl.se/libcurl/) (for fetching remote JSON)
-  - [nlohmann/json](https://github.com/nlohmann/json) (a single-header JSON library)
-- **Arch Linux Users:**  
-  Optional dependencies to build and package for the AUR.
+  - [libcurl](https://curl.se/libcurl/)
+  - [nlohmann/json](https://github.com/nlohmann/json)
 
 ## Installation
 
@@ -36,42 +28,18 @@ A C++ program that fetches and matches bash scripts from a remote JSON file. It 
 
 2. **Compile the Program:**
 
-    Ensure that `libcurl` and the `nlohmann/json` header are available. Then run:
-
     ```bash
-    g++ -std=c++11 -O2 script_fetcher.cpp -lcurl -o cpp-project-bash-automator
+    g++ -std=c++11 -O2 script_fetcher.cpp -lcurl -o script_fetcher_cpp
     ```
 
 3. **Run the Program:**
 
     ```bash
-    ./cpp-project-bash-automator
+    ./script_fetcher_cpp
     ```
 
 ### Installing via AUR
 
-A `PKGBUILD` is provided to package this project as an AUR package.
+You can install the package from the AUR:
 
-1. **Clone the AUR Package Repository:**
-
-    ```bash
-    git clone https://aur.archlinux.org/cpp-project-bash-automator.git
-    cd cpp-project-bash-automator
-    ```
-
-2. **Build and Install the Package:**
-
-    ```bash
-    makepkg -si
-    ```
-
-    This command will clone the source, build the executable, and install it to `/usr/bin/cpp-project-bash-automator`.
-
-## Usage
-
-When you run the program, you'll be prompted to enter a query:
-
-```bash
-./cpp-project-bash-automator
-Enter your query (e.g., sys info, backup, cleanup):
-
+[script_fetcher_cpp on AUR](https://aur.archlinux.org/packages/script_fetcher_cpp)
