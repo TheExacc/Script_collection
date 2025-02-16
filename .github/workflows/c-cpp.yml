@@ -1,0 +1,30 @@
+name: Build and Test
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y g++ libcurl4-openssl-dev
+
+      - name: Build project
+        run: |
+          g++ -std=c++11 -O2 script_fetcher.cpp -lcurl -o script_fetcher_cpp
+
+      - name: Run tests
+        run: |
+          ./script_fetcher_cpp <<< "sys info"
