@@ -24,7 +24,7 @@ std::string toLower(const std::string &s) {
     return result;
 }
 
-//split a string into words based on whitespace.
+// Split a string into words based on whitespace.
 std::vector<std::string> splitWords(const std::string& s) {
     std::vector<std::string> words;
     std::istringstream iss(s);
@@ -35,7 +35,7 @@ std::vector<std::string> splitWords(const std::string& s) {
     return words;
 }
 
-// compute a matching score by checking if each query word is contained in the entire description.
+// Compute a matching score by checking if each query word is contained in the entire description.
 int computeScore(const std::string& query, const std::string& description) {
     int score = 0;
     std::vector<std::string> queryWords = splitWords(query);
@@ -57,20 +57,19 @@ int main() {
     std::getline(std::cin, query);
     query = toLower(query);
 
-    // url of the bash_scripts.json file on my gitHub.
+    // URL of the bash_scripts.json file on GitHub.
     std::string url = "https://raw.githubusercontent.com/TheExacc/Script_collection/refs/heads/master/bash_scripts.json";
 
     CURL* curl = curl_easy_init();
     std::string readBuffer;
 
     if (curl) {
-        // libcurl options setting.
+        // Set libcurl options.
         curl_easy_setopt(curl, CURLOPT_URL, url.c_str());
-        curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L); 
+        curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
         curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
 
-    
         CURLcode res = curl_easy_perform(curl);
         if (res != CURLE_OK) {
             std::cerr << "Failed to fetch JSON: " << curl_easy_strerror(res) << std::endl;
@@ -84,18 +83,18 @@ int main() {
     }
 
     try {
-        
+        // Parse the JSON data.
         auto jsonData = json::parse(readBuffer);
 
         int bestScore = 0;
         std::vector<std::pair<std::string, json>> bestMatches;
 
-        // Iterate over entryes
+        // Iterate over each entry in the JSON.
         for (auto& [key, value] : jsonData.items()) {
             std::string description = value["description"];
             int score = computeScore(query, description);
 
-            //clear previous best matches  when the score is higher
+            // If the score is higher than the current best, clear previous best matches.
             if (score > bestScore) {
                 bestScore = score;
                 bestMatches.clear();
@@ -110,7 +109,9 @@ int main() {
             for (const auto& match : bestMatches) {
                 std::cout << "\nKey: " << match.first << "\n";
                 std::cout << "Description: " << match.second["description"] << "\n";
-                std::cout << "Script:\n" << match.second["script"] << "\n";
+                // Extract the script as a proper C++ string.
+                std::string script = match.second["script"].get<std::string>();
+                std::cout << "Script:\n```bash\n" << script << "\n```\n";
             }
         } else {
             std::cout << "\nNo matching scripts found for your query." << std::endl;
