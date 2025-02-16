@@ -1,0 +1,34 @@
+{
+  "system_info": {
+    "description": "Display system information",
+    "script": "#!/bin/bash\n\necho \"System Information:\"\necho \"------------------\"\necho \"Hostname: $(hostname)\"\necho \"Kernel: $(uname -r)\"\necho \"CPU: $(lscpu | grep 'Model name' | cut -f 2 -d \":\" | awk '{$1=$1}1')\"\necho \"Memory: $(free -h | grep Mem | awk '{print $2}')\"\necho \"Disk Usage: $(df -h / | tail -1 | awk '{print $5}')\"\necho \"Uptime: $(uptime -p)\""
+  },
+  "backup_files": {
+    "description": "Backup files to a specified directory with timestamp",
+    "script": "#!/bin/bash\n\nBACKUP_DIR=\"/path/to/backup\"\nSOURCE_DIR=\"/path/to/source\"\nTIMESTAMP=$(date +\"%Y%m%d_%H%M%S\")\n\nif [ ! -d \"$BACKUP_DIR\" ]; then\n    mkdir -p \"$BACKUP_DIR\"\nfi\n\ntar -czf \"$BACKUP_DIR/backup_$TIMESTAMP.tar.gz\" \"$SOURCE_DIR\"\n\necho \"Backup created: backup_$TIMESTAMP.tar.gz\""
+  },
+  "log_cleaner": {
+    "description": "Clean old log files older than specified days",
+    "script": "#!/bin/bash\n\nLOG_DIR=\"/var/log\"\nDAYS_OLD=30\n\nfind \"$LOG_DIR\" -type f -name \"*.log\" -mtime +$DAYS_OLD -exec rm {} \\;\necho \"Removed log files older than $DAYS_OLD days from $LOG_DIR\""
+  },
+  "process_monitor": {
+    "description": "Monitor specific process and restart if not running",
+    "script": "#!/bin/bash\n\nPROCESS_NAME=\"your_process\"\n\nif ! pgrep -x \"$PROCESS_NAME\" >/dev/null; then\n    echo \"$PROCESS_NAME is not running. Restarting...\"\n    /path/to/$PROCESS_NAME &\nelse\n    echo \"$PROCESS_NAME is running normally\"\nfi"
+  },
+  "database_backup": {
+    "description": "Backup MySQL database with rotation",
+    "script": "#!/bin/bash\n\nDB_USER=\"username\"\nDB_PASS=\"password\"\nDB_NAME=\"database_name\"\nBACKUP_DIR=\"/path/to/db/backups\"\nMAX_BACKUPS=5\n\nTIMESTAMP=$(date +\"%Y%m%d_%H%M%S\")\n\nmysqldump -u \"$DB_USER\" -p\"$DB_PASS\" \"$DB_NAME\" > \"$BACKUP_DIR/db_backup_$TIMESTAMP.sql\"\n\n# Remove old backups\nls -1t \"$BACKUP_DIR\"/*.sql | tail -n +$((MAX_BACKUPS+1)) | xargs -r rm"
+  },
+  "disk_space_alert": {
+    "description": "Alert when disk space exceeds threshold",
+    "script": "#!/bin/bash\n\nTHRESHOLD=90\nEMAIL=\"admin@example.com\"\n\ndf -h | grep '^/dev/' | while read line; do\n    usage=$(echo $line | awk '{print $5}' | sed 's/%//')\n    partition=$(echo $line | awk '{print $1}')\n    if [ $usage -gt $THRESHOLD ]; then\n        echo \"High disk usage on $partition: $usage%\" | mail -s \"Disk Space Alert\" $EMAIL\n    fi\ndone"
+  },
+  "ssl_cert_monitor": {
+    "description": "Check SSL certificate expiration",
+    "script": "#!/bin/bash\n\nDOMAIN=\"example.com\"\nALERT_DAYS=30\nEMAIL=\"admin@example.com\"\n\nexp_date=$(openssl s_client -connect $DOMAIN:443 -servername $DOMAIN </dev/null 2>/dev/null | openssl x509 -enddate -noout | cut -d= -f2)\nexp_epoch=$(date -d \"$exp_date\" +%s)\nnow_epoch=$(date +%s)\ndays_left=$(( ($exp_epoch - $now_epoch) / 86400 ))\n\nif [ $days_left -lt $ALERT_DAYS ]; then\n    echo \"SSL certificate for $DOMAIN will expire in $days_left days\" | mail -s \"SSL Certificate Alert\" $EMAIL\nfi"
+  },
+  "file_sync": {
+    "description": "Synchronize files between directories",
+    "script": "#!/bin/bash\n\nSOURCE_DIR=\"/path/to/source\"\nDEST_DIR=\"/path/to/destination\"\nLOG_FILE=\"/var/log/sync.log\"\n\nrsync -av --delete \"$SOURCE_DIR/\" \"$DEST_DIR/\" >> \"$LOG_FILE\" 2>&1\n\necho \"Sync completed on $(date)\" >> \"$LOG_FILE\""
+  }
+}
